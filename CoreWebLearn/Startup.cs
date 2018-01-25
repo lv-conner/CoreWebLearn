@@ -27,7 +27,6 @@ namespace CoreWebLearn
             }
 
             app.UseMiddleware<HelloMiddle>("Hello", "text/html; charset=utf-8");
-
             //app.Run(async (context) =>
             //{
             //    await context.Response.WriteAsync("Hello World!");
