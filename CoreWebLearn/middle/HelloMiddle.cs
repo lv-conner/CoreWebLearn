@@ -28,7 +28,9 @@ namespace CoreWebLearn
             context.Response.ContentType = _contentType;
             //var byteContent = Encoding.GetEncoding("GB2312").GetBytes(_content + _getName.Name);
             var byteContent = Encoding.UTF8.GetBytes(_content + _getName.Name);
+            //await _next(context);
             await context.Response.Body.WriteAsync(byteContent, 0, byteContent.Length);
+
         }
     }
 }
