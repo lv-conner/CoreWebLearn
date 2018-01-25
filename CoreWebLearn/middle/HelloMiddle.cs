@@ -20,12 +20,14 @@ namespace CoreWebLearn
             _content = content;
             _contentType = contentType;
         }
-
+        /// <summary>
+        /// 添加中文支持
+        /// </summary>
         public async Task Invoke(HttpContext context)
         {
             context.Response.ContentType = _contentType;
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            var byteContent = Encoding.GetEncoding("GB2312").GetBytes(_content + _getName.Name);
+            //var byteContent = Encoding.GetEncoding("GB2312").GetBytes(_content + _getName.Name);
+            var byteContent = Encoding.Unicode.GetBytes(_content + _getName.Name);
             await context.Response.Body.WriteAsync(byteContent, 0, byteContent.Length);
         }
     }

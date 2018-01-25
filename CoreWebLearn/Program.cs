@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,7 @@ namespace CoreWebLearn
         public static void Main(string[] args)
         {
             BuildWebHost(args).Run();
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
