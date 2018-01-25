@@ -26,7 +26,7 @@ namespace CoreWebLearn
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseMiddleware<HelloMiddle>("Hello", "text/html");
+            app.UseMiddleware<HelloMiddle>("Hello", "text/html; charset=utf-8");
 
             //app.Run(async (context) =>
             //{

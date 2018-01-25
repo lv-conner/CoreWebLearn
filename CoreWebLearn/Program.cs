@@ -15,8 +15,8 @@ namespace CoreWebLearn
     {
         public static void Main(string[] args)
         {
+            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             BuildWebHost(args).Run();
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
