@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css" />
+    <script type="text/javascript" src="../lib/jQuery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../lib/bootstrap/dist/js/bootstrap.js"></script>
+</head>
+<body>
+    <h1>This is a static files</h1>
+    <button class="btn btn-primary" onclick="btnSubmitClick()" id="btnSubmit" type="button">Submit</button>
+    <button class="btn btn-info" onclick="btnSaveList()" id="btnSaveList" type="button">GetList</button>
+    <button class="btn btn-danger" onclick="btnGetViewModel()" id="btnGetViewModel" type="button">GetViewModel</button>
+    <script type="text/javascript">
+        function btnSubmitClick() {
+            $.ajax({
+                url: "/api/Home/SavePerson",
+                type: "post",
+                dataType: "json",
+                data: { "Id": "00012", "Name": "Tim" },
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        }
+        function btnSaveList() {
+            var list = [];
+            var person = { "Id": "00012", "Name": "Tim" };
+            list.push(person);
+            list.push(person);
+            console.log(list);
+            $.ajax({
+                url: "/api/Home/SavePersonList",
+                type: "post",
+                data: {"list":JSON.stringify(list)},
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        }
+
+        function btnGetViewModel() {
+            $.ajax({
+                url: "/api/Home/GetViewModel",
+                type: "post",
+                dataType: "json",
+                data:
+                {
+                    "Header": { "Id": "0001", "Name": "tim" }, "BookList": [{ "BookId": "001", "BookName": "Learn Csharp" }, { "BookId": "001", "BookName": "Learn Csharp" }]
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
