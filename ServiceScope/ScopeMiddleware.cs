@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ServiceScope
 {
@@ -19,6 +20,7 @@ namespace ServiceScope
 
         public async Task Invoke(HttpContext httpContext, ITransient transient, IScope scope, ISingleton singleton)
         {
+            
             transient.Count++;
             scope.Count++;
             singleton.Count++;
