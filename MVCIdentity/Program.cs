@@ -18,7 +18,7 @@ namespace MVCIdentity
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+            WebHost.CreateDefaultBuilder(args).UseKestrel(option => {}).UseUrls()
                 .UseStartup<Startup>()
                 .Build();
     }

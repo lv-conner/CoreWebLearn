@@ -12,6 +12,7 @@ using MVCIdentity.Data;
 using MVCIdentity.Models;
 using MVCIdentity.Services;
 using Newtonsoft.Json;
+using MVCIdentity.Code;
 
 namespace MVCIdentity
 {
@@ -27,16 +28,22 @@ namespace MVCIdentity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //配置数据库链接
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(option =>
+            {
+
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddMvc();
+            services.AddOptions();
+            services.Configure<SecretManager>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
