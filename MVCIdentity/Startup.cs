@@ -13,6 +13,7 @@ using MVCIdentity.Models;
 using MVCIdentity.Services;
 using Newtonsoft.Json;
 using MVCIdentity.Code;
+using Microsoft.AspNetCore.Authentication;
 
 namespace MVCIdentity
 {
@@ -34,11 +35,11 @@ namespace MVCIdentity
 
             services.AddIdentity<ApplicationUser, IdentityRole>(option =>
             {
-
+               
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
+            
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddMvc();

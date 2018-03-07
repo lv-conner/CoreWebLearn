@@ -11,15 +11,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.CodeAnalysis.Options;
 using MVCIdentity.Code;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
 
 namespace MVCIdentity.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IOptions<SecretManager> _option;
-        public HomeController(IOptions<SecretManager> option)
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HomeController(IOptions<SecretManager> option,IUserStore<ApplicationUser> userStore, UserManager<ApplicationUser> userManager)
         {
             _option = option;
+            _userStore = userStore;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -34,7 +39,8 @@ namespace MVCIdentity.Controllers
 
         public IActionResult GetPassword()
         {
-            return Content(_option.Value.Password);
+            
+            return Content(_userManager.GetType().ToString() + "\t" + _userStore.GetType().ToString());
         }
 
         public IActionResult Contact()
