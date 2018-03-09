@@ -2,35 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-
-
-namespace CoreWebLearn
+namespace MVCFilterApplication
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             BuildWebHost(args).Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>().Configure(app =>
-                {
-
-                })
-            .ConfigureServices(services =>
-            {
-            })
+                .UseStartup<Startup>()
                 .Build();
     }
 }

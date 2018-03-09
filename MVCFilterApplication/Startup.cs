@@ -3,20 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MVCIdentity.Data;
-using MVCIdentity.Models;
-using MVCIdentity.Services;
-using Newtonsoft.Json;
-using MVCIdentity.Code;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using MVCFilterApplication.Filter;
 
-namespace MVCIdentity
+namespace MVCFilterApplication
 {
     public class Startup
     {
@@ -30,33 +22,19 @@ namespace MVCIdentity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //配置数据库链接
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddIdentity<ApplicationUser, IdentityRole>(option =>
+            services.AddMvc(options=>
             {
-               
-            })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
-            services.AddMvc(options=> {
+                //options.Filters.Add(new MyActionFilter());
             });
-            services.AddOptions();
-            services.Configure<SecretManager>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -65,10 +43,13 @@ namespace MVCIdentity
 
             app.UseStaticFiles();
 
-            app.UseAuthentication();
-            app.UseMiddleware<RouterMiddleware>();
+
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                  name: "areas",
+                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
