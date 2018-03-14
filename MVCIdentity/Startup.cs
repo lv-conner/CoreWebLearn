@@ -66,7 +66,6 @@ namespace MVCIdentity
             app.UseStaticFiles();
 
             app.UseAuthentication();
-            app.UseMiddleware<RouterMiddleware>();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
