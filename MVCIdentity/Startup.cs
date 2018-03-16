@@ -32,11 +32,12 @@ namespace MVCIdentity
         {
             //配置数据库链接
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             services.AddIdentity<ApplicationUser, IdentityRole>(option =>
             {
-               
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();

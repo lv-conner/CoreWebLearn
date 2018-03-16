@@ -20,9 +20,12 @@ namespace MVCFilterApplication.Filter
         }
     }
 
-    public class MyAuthoriztionAttribute: AuthorizeAttribute
+    public class MyAuthoriztionAttribute : IAuthorizationFilter
     {
-
+        public void OnAuthorization(AuthorizationFilterContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class MyActionFilterAttribute : IResourceFilter
