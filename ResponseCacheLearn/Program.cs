@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
+using System;
+using System.Linq;
 
 namespace ResponseCacheLearn
 {
@@ -14,7 +13,27 @@ namespace ResponseCacheLearn
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+
+            new WebHostBuilder()
+            .UseKestrel()
+            .ConfigureServices(svcs => svcs.AddResponseCaching())
+            .Configure(app => app
+            .UseResponseCaching()
+            .Run(async context =>
+             {
+                  context.Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
+                   {
+                      Public = true,
+                      MaxAge = TimeSpan.FromSeconds(3600)
+                  };
+
+                  string utc = context.Request.Query["utc"].FirstOrDefault() ?? "";
+                  bool isUtc = string.Equals(utc, "true", StringComparison.OrdinalIgnoreCase);
+                  await context.Response.WriteAsync(isUtc ? DateTime.UtcNow.ToString() : DateTime.UtcNow.ToString());
+             }))
+            .Build()
+            .Run();
+            //BuildWebHost(args).Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

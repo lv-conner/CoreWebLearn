@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoutingApplication", "Routi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVCFilterApplication", "MVCFilterApplication\MVCFilterApplication.csproj", "{71EFFAF4-C61E-4167-9F42-5FBACA44B6C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResponseCacheLearn", "ResponseCacheLearn\ResponseCacheLearn.csproj", "{F291301C-8596-4B46-9E84-DDB5D172BE9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResponseCacheLearn", "ResponseCacheLearn\ResponseCacheLearn.csproj", "{F291301C-8596-4B46-9E84-DDB5D172BE9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookieAuthentication", "CookieAuthentication\CookieAuthentication.csproj", "{C9097BD1-344C-4389-A901-4A7FB35B1612}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{F291301C-8596-4B46-9E84-DDB5D172BE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F291301C-8596-4B46-9E84-DDB5D172BE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F291301C-8596-4B46-9E84-DDB5D172BE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9097BD1-344C-4389-A901-4A7FB35B1612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9097BD1-344C-4389-A901-4A7FB35B1612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9097BD1-344C-4389-A901-4A7FB35B1612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9097BD1-344C-4389-A901-4A7FB35B1612}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
