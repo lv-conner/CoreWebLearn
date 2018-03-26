@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
@@ -11,10 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MVCIdentity.Data;
 using MVCIdentity.Models;
 using MVCIdentity.Services;
-using Newtonsoft.Json;
 using MVCIdentity.Code;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace MVCIdentity
 {
