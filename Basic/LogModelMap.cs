@@ -12,7 +12,7 @@ namespace Basic
         public void Configure(EntityTypeBuilder<LogModel> builder)
         {
             builder.HasKey(p => p.LogId);
-            builder.Property(p => p.LogId).ForSqlServerUseSequenceHiLo();
+            builder.Property(p => p.LogId).UseSqlServerIdentityColumn();
             builder.Property(p => p.Message).IsUnicode();
         }
     }

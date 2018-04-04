@@ -13,9 +13,21 @@ namespace Basic.Context
             this.connectionString = connectionString;
         }
 
+        public LoggerContext():this(null)
+        {
+
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(connectionString);
+            if(connectionString == null)
+            {
+                optionsBuilder.UseSqlServer("data Source=PRCNMG1L0311;initial catalog=DBLoggerContext;user id=sa;password=Root@admin;");
+            }
+            else
+            {
+                optionsBuilder.UseSqlServer(connectionString);
+            }
             base.OnConfiguring(optionsBuilder);
         }
 
