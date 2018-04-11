@@ -21,17 +21,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVCFilterApplication", "MVC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResponseCacheLearn", "ResponseCacheLearn\ResponseCacheLearn.csproj", "{F291301C-8596-4B46-9E84-DDB5D172BE9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookieAuthentication", "CookieAuthentication\CookieAuthentication.csproj", "{C9097BD1-344C-4389-A901-4A7FB35B1612}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieAuthentication", "CookieAuthentication\CookieAuthentication.csproj", "{C9097BD1-344C-4389-A901-4A7FB35B1612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticFileLearn", "StaticFileLearn\StaticFileLearn.csproj", "{1336CD33-2789-4DF9-8E56-8F190017D8D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaticFileLearn", "StaticFileLearn\StaticFileLearn.csproj", "{1336CD33-2789-4DF9-8E56-8F190017D8D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignIRLearn", "SignIRLearn\SignIRLearn.csproj", "{90E7F9B1-82D6-4C97-9713-0AF3BE8732A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignIRLearn", "SignIRLearn\SignIRLearn.csproj", "{90E7F9B1-82D6-4C97-9713-0AF3BE8732A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerLogger", "CustomerLogger\CustomerLogger.csproj", "{B2C455DD-3827-40FD-9286-F1ADAB238D70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerLogger", "CustomerLogger\CustomerLogger.csproj", "{B2C455DD-3827-40FD-9286-F1ADAB238D70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBLogger", "DBLogger\DBLogger.csproj", "{58DBD67F-050A-4B71-9BB8-B18FA28A1AF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBLogger", "DBLogger\DBLogger.csproj", "{58DBD67F-050A-4B71-9BB8-B18FA28A1AF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic", "Basic\Basic.csproj", "{8F44C1C2-E6D3-4075-B458-47C138D10E92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basic", "Basic\Basic.csproj", "{8F44C1C2-E6D3-4075-B458-47C138D10E92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiExplorer", "ApiExplorer\ApiExplorer.csproj", "{A65A7AA5-67DA-4B7C-B53F-121EB199618B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoraDemo", "DoraDemo\DoraDemo.csproj", "{9E30B24D-10A0-4594-9651-4F488E56628A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +103,14 @@ Global
 		{8F44C1C2-E6D3-4075-B458-47C138D10E92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F44C1C2-E6D3-4075-B458-47C138D10E92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F44C1C2-E6D3-4075-B458-47C138D10E92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A65A7AA5-67DA-4B7C-B53F-121EB199618B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A65A7AA5-67DA-4B7C-B53F-121EB199618B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A65A7AA5-67DA-4B7C-B53F-121EB199618B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A65A7AA5-67DA-4B7C-B53F-121EB199618B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E30B24D-10A0-4594-9651-4F488E56628A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E30B24D-10A0-4594-9651-4F488E56628A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E30B24D-10A0-4594-9651-4F488E56628A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E30B24D-10A0-4594-9651-4F488E56628A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

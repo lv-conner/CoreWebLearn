@@ -7,7 +7,7 @@ using Basic.CustomerLoggerExtension;
 using System.Reflection;
 using System.IO;
 using Basic.Options;
-
+using RabbitMQ.Client;
 namespace Basic
 {
     class Program

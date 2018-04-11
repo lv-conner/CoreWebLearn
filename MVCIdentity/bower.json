@@ -2,5 +2,6 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
+    "Font-Awesome": "5.0.10"
   }
 }

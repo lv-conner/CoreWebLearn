@@ -36,7 +36,11 @@ namespace MVCIdentity
                 .AddDefaultTokenProviders();
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddMvc(options=> {
+            services.AddMvc(options =>
+            {
+
+            }).AddJsonOptions(options =>
+            {
             });
             services.AddOptions();
             services.Configure<SecretManager>(Configuration);
