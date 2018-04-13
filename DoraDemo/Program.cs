@@ -18,6 +18,8 @@ namespace DoraDemo
                     .BuildInterceptableServiceProvider()
                     .GetRequiredService<Demo>();
             Debug.Assert(demo.Invoke("foobar") == "FOOBAR");
+            var type = demo.GetType().IsAssignableFrom(typeof(Demo));
+            var fullName = demo.GetType().FullName.CompareTo(typeof(Demo).FullName);
 
             Console.ReadKey();
         }
@@ -86,7 +88,7 @@ namespace DoraDemo
         public Task InvokeAsync(InvocationContext invocationContext)
         {
             var parameters = invocationContext.TargetMethod.GetParameters();
-            for (int index = 0; index < invocationContext.Arguments.Length; index++)
+            for (int index = 0;  index < invocationContext.Arguments.Length; index++)
             {
                 var parameter = parameters[index];
                 var converterProviders = parameter.GetCustomAttributes(false).OfType<IArgumentConvertorProvider>().ToArray();
