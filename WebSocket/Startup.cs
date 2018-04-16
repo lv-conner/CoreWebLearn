@@ -15,8 +15,13 @@ using Microsoft.AspNetCore.Http.Features;
 
 namespace WebSocketLearn
 {
+    public class Common
+    {
+        public static List<System.Net.WebSockets.WebSocket> webSocketsList = new List<System.Net.WebSockets.WebSocket>();
+    }
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -47,7 +52,10 @@ namespace WebSocketLearn
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
+                    //此处进行升级协议。并建立链接。
                     var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    Common.webSocketsList.Add(webSocket);
+                    //以下开始侦听并回显接收到的数据
                     await Echo(context, webSocket, loggerFactory.CreateLogger("Echo"));
                 }
                 else
@@ -68,12 +76,12 @@ namespace WebSocketLearn
 
         private async Task Echo(HttpContext context, System.Net.WebSockets.WebSocket webSocket, ILogger logger)
         {
-            var fie = context.Features.Get<IHttpUpgradeFeature>();
-            var socketFeature = context.Features.Get<IHttpWebSocketFeature>();
-
+            //缓冲区
             var buffer = new byte[1024 * 4];
+            //使用WebSocket接收信息。
             var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             LogFrame(logger, result, buffer);
+            //如果消息不是关闭消息则进行循环侦听。
             while (!result.CloseStatus.HasValue)
             {
                 // If the client send "ServerClose", then they want a server-originated close to occur
@@ -92,8 +100,16 @@ namespace WebSocketLearn
                         context.Abort();
                     }
                 }
+                foreach (var item in Common.webSocketsList)
+                {
+                    if(item.State != WebSocketState.Open)
+                    {
+                        continue;
+                    }
+                    await item.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
+                }
 
-                await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
+                //await webSocket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
                 logger.LogDebug($"Sent Frame {result.MessageType}: Len={result.Count}, Fin={result.EndOfMessage}: {content}");
 
                 result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
