@@ -7,12 +7,14 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="watch.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="watch.txt" />
   </ItemGroup>
 
   <ItemGroup>

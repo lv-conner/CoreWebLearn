@@ -10,6 +10,10 @@ using Basic.Options;
 using RabbitMQ.Client;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.Extensions.Primitives;
+using Microsoft.Extensions.FileProviders;
+using System.Threading;
+using System.Collections.Generic;
 
 namespace Basic
 {
@@ -17,45 +21,69 @@ namespace Basic
     {
         static void Main(string[] args)
         {
+            LoadAssembly();
+            Console.WriteLine("MainThread" + Thread.CurrentThread.ManagedThreadId);
+            TrackFileChange();
 
-            //var services = new ServiceCollection()
-            //    .AddOptions()
-            //    .Configure< FileLoggerOptions>(options => { })
-            //var config = new ConfigurationBuilder().AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(),"appsettings.json")).Build();
-            //var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Log.txt");
-            //var services = new ServiceCollection()
-            //    .AddOptions()
-            //    .AddLogging()
-            //    //.Configure<FileLoggerOptions>(options =>
-            //    //{
-            //    //    options.Path = logFilePath;
-            //    //})
-            //    .Configure<FileLoggerOptions>(config.GetSection("fileLoggerOptions"))
-            //    .Configure<DBLoggerOptions>(config.GetSection("DBOptions"))
-            //    .BuildServiceProvider();
-            //var logger = services.GetService<ILoggerFactory>()
-            //    .AddConsole()
-            //    .AddDebug()
-            //    .AddDBLogger(services.GetService<IOptions<DBLoggerOptions>>().Value)
-            //    .AddFileLogger(services.GetService<IOptions<FileLoggerOptions>>().Value)
-            //    .CreateLogger<Program>();
-            ////logger.LogInformation("Hello");
-
-
-            //try
-            //{
-            //    throw new IndexOutOfRangeException("Out");
-            //}
-            //catch(Exception e)
-            //{
-            //    logger.LogError(10002, e, e.Message);
-            //}
-            TestLazy();
-            GetOptions();
-            GetServices();
+            //TestLazy();
+            //GetOptions();
+            //GetServices();
             Console.ReadKey();
         }
 
+        static void LogOptions()
+        {
+            var envConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            var name = envConfig.GetValue<string>("name");
+
+            var config = new ConfigurationBuilder().AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json")).Build();
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Log.txt");
+            var services = new ServiceCollection()
+                .AddOptions()
+                .AddLogging()
+                //.Configure<FileLoggerOptions>(options =>
+                //{
+                //    options.Path = logFilePath;
+                //})
+                .Configure<FileLoggerOptions>(config.GetSection("fileLoggerOptions"))
+                .Configure<DBLoggerOptions>(config.GetSection("DBOptions"))
+                .BuildServiceProvider();
+            var logger = services.GetService<ILoggerFactory>()
+                .AddConsole()
+                .AddDebug()
+                .AddDBLogger(services.GetService<IOptions<DBLoggerOptions>>().Value)
+                .AddFileLogger(services.GetService<IOptions<FileLoggerOptions>>().Value)
+                .CreateLogger<Program>();
+            logger.LogInformation("Hello");
+            try
+            {
+                throw new IndexOutOfRangeException("Out");
+            }
+            catch (Exception e)
+            {
+                logger.LogError(10002, e, e.Message);
+            }
+        }
+
+        static void Config()
+        {
+        }
+
+
+        static void LoadAssembly()
+        {
+            var asm = Assembly.Load("System.IO");
+            var exportType = asm.ExportedTypes.ToList();
+            var definedType = asm.DefinedTypes.ToList();
+            var types = asm.GetTypes();
+            var type1 = asm.GetExportedTypes();
+            var list = new List<Type>();
+            asm.GetModules().Aggregate<Module, List<Type>>(list, (l, m) =>
+            {
+                l.AddRange(m.GetTypes());
+                return l;
+            });
+        }
         static void GetOptions()
         {
             //option模式
@@ -92,6 +120,23 @@ namespace Basic
             Debug.Assert(optionsList.Count() == 2);
             name.Configure(options);
 
+        }
+
+        static void SessionCheck()
+        {
+            
+        }
+
+        static void TrackFileChange()
+        {
+            ChangeToken.OnChange(() => 
+            {
+                return new PhysicalFileProvider(Directory.GetCurrentDirectory()).Watch("/*.txt");
+            }, () => 
+            {
+                Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine("change");
+            });
         }
 
         static void GetServices()

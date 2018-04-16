@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Basic": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Name": "tim"
+      }
+    }
+  }
+}

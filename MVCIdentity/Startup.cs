@@ -29,6 +29,8 @@ namespace MVCIdentity
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            
+
             services.AddIdentity<ApplicationUser, IdentityRole>(option =>
             {
             })
