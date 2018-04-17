@@ -1,0 +1,1 @@
+﻿//需要在项目目录添加.bowerrc文件,并添加{"directory": "wwwroot/lib"}指定输出目录，然后使用bower添加前端包才能生成到wwwroot\lib，否则会生成到bower-component文件夹中
