@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http.Features;
+using WebSocketLearn.Middleware;
 
 namespace WebSocketLearn
 {
@@ -48,21 +49,22 @@ namespace WebSocketLearn
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseWebSockets();
-            app.Use(async (context, next) =>
-            {
-                if (context.WebSockets.IsWebSocketRequest)
-                {
-                    //此处进行升级协议。并建立链接。
-                    var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    Common.webSocketsList.Add(webSocket);
-                    //以下开始侦听并回显接收到的数据
-                    await Echo(context, webSocket, loggerFactory.CreateLogger("Echo"));
-                }
-                else
-                {
-                    await next();
-                }
-            });
+            app.UseEchoMiddleware();
+            //app.Use(async (context, next) =>
+            //{
+            //    if (context.WebSockets.IsWebSocketRequest)
+            //    {
+            //        //此处进行升级协议。并建立链接。返回代表链接的套接字。
+            //        var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            //        Common.webSocketsList.Add(webSocket);
+            //        //以下开始侦听并回显接收到的数据
+            //        await Echo(context, webSocket, loggerFactory.CreateLogger("Echo"));
+            //    }
+            //    else
+            //    {
+            //        await next();
+            //    }
+            //});
 
             app.UseStaticFiles();
 
@@ -106,6 +108,10 @@ namespace WebSocketLearn
                     {
                         continue;
                     }
+                    Console.WriteLine("Enter message");
+                    var message = Console.ReadLine();
+                    var bytes = Encoding.UTF8.GetBytes(message);
+                    await item.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Count()), WebSocketMessageType.Text, true, CancellationToken.None);
                     await item.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count), result.MessageType, result.EndOfMessage, CancellationToken.None);
                 }
 

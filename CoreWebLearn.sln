@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreWebLearn", "CoreWebLearn\CoreWebLearn.csproj", "{7C3A1EDF-97B1-477A-81DD-F51228967A91}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVCTemplate", "MVCTemplate\MVCTemplate.csproj", "{6BB49B34-DCFA-48DB-A7C4-8CAE0C5F16A9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewWebMVC", "NewWebMVC\NewWebMVC.csproj", "{2F677B64-25CC-4948-9FC5-918204A34969}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiTemplate", "WebApiTemplate\WebApiTemplate.csproj", "{EAD32ECD-A8D3-46E6-A38D-72235FAA507F}"
@@ -39,9 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoraDemo", "DoraDemo\DoraDe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreTest", "NetCoreTest\NetCoreTest.csproj", "{26B88A50-AE6A-481E-8597-DAF12A3F0BB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketLearn", "WebSocketLearn\WebSocketLearn.csproj", "{0FCFF2A5-789D-4A42-9C52-8FD1791C3AE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketLearn", "WebSocketLearn\WebSocketLearn.csproj", "{0FCFF2A5-789D-4A42-9C52-8FD1791C3AE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocket", "WebSocket\WebSocket.csproj", "{2DD2367C-AAE4-4E46-B20C-FE5BA554585C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocket", "WebSocket\WebSocket.csproj", "{2DD2367C-AAE4-4E46-B20C-FE5BA554585C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +45,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7C3A1EDF-97B1-477A-81DD-F51228967A91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C3A1EDF-97B1-477A-81DD-F51228967A91}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C3A1EDF-97B1-477A-81DD-F51228967A91}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C3A1EDF-97B1-477A-81DD-F51228967A91}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6BB49B34-DCFA-48DB-A7C4-8CAE0C5F16A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BB49B34-DCFA-48DB-A7C4-8CAE0C5F16A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6BB49B34-DCFA-48DB-A7C4-8CAE0C5F16A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BB49B34-DCFA-48DB-A7C4-8CAE0C5F16A9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F677B64-25CC-4948-9FC5-918204A34969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2F677B64-25CC-4948-9FC5-918204A34969}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F677B64-25CC-4948-9FC5-918204A34969}.Release|Any CPU.ActiveCfg = Release|Any CPU
