@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http.Features;
 using WebSocketLearn.Middleware;
+using WebSocketLearn.Services;
 
 namespace WebSocketLearn
 {
@@ -34,6 +35,8 @@ namespace WebSocketLearn
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddAntiforgery();
+            services.AddSingleton<IWebSocketEncoding, WebSocketEncoding>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

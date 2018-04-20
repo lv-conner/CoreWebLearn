@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebSocket.Controllers
 {
+    [ValidateAntiForgeryToken]
     public class WebSocketController : Controller
     {
         public IActionResult Index()

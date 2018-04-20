@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
+using WebSocketLearn.Services;
 
 /// <summary>
 /// 回显中间件，将使用WebSocket发送的消息加上Ok后回发到客户端。
@@ -25,7 +28,7 @@ namespace WebSocketLearn.Middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, IHostingEnvironment hostingEnvironment, IWebSocketEncoding socketEncoding)
         {
             var fe = httpContext.Features.Get<IHttpUpgradeFeature>();
             if (httpContext.WebSockets.IsWebSocketRequest)
@@ -54,20 +57,48 @@ namespace WebSocketLearn.Middleware
                         result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     }
                     msgArr.AddRange(new ArraySegment<byte>(buffer, 0, result.Count));
-
-                    if (result.MessageType == System.Net.WebSockets.WebSocketMessageType.Text)
+                    switch (result.MessageType)
                     {
-                        //获取客户端发送的消息。消息编码，采用UTF8
-                        var message = Encoding.UTF8.GetString(msgArr.ToArray());
-                        logger.LogInformation($"{ "Received message is \t" + message }");
-                        var res = Encoding.UTF8.GetBytes("OK \t" + message);
-                        //回显数据
-                        await webSocket.SendAsync(new ArraySegment<byte>(res,0,res.Count()), System.Net.WebSockets.WebSocketMessageType.Text, result.EndOfMessage, CancellationToken.None);
+                        case System.Net.WebSockets.WebSocketMessageType.Binary:
+                            try
+                            {
+                                var fileName = Path.Combine(hostingEnvironment.WebRootPath, Guid.NewGuid().ToString() + ".png");
+                                using (FileStream fileStream = new FileStream(fileName, FileMode.OpenOrCreate))
+                                {
+                                    await fileStream.WriteAsync(msgArr.ToArray(), 0, msgArr.Count());
+                                }
+                            }
+                            catch(FileNotFoundException fileNotFound)
+                            {
+                                await webSocket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(fileNotFound.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
+                            }
+                            catch(InvalidOperationException inEx)
+                            {
+                                await webSocket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(inEx.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
+                            }
+                            catch(Exception e)
+                            {
+                                await webSocket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(e.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
+                            }
+                            break;
+                        case System.Net.WebSockets.WebSocketMessageType.Close:
+                            //关闭链接。
+                            await webSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "客户端关闭", CancellationToken.None);
+                            break;
+                        case System.Net.WebSockets.WebSocketMessageType.Text:
+                            //获取客户端发送的消息。消息编码，采用UTF8
+                            var message = socketEncoding.Decode(msgArr.ToArray());
+                            logger.LogInformation($"{ "Received message is \t" + message }");
+                            var res =socketEncoding.Encode("OK \t" + message);
+                            //回显数据
+                            await webSocket.SendAsync(new ArraySegment<byte>(res,0,res.Count()), System.Net.WebSockets.WebSocketMessageType.Text, result.EndOfMessage, CancellationToken.None);
+                            break;
+                        default:
+                            break;
                     }
                     result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer),CancellationToken.None);
                 }
-                //关闭链接。
-                await webSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "客户端关闭", CancellationToken.None);
+
             }
             else
             {

@@ -26,6 +26,7 @@ namespace MVCIdentity.Controllers
             _userStore = userStore;
             _userManager = userManager;
         }
+        [ValidateAntiForgeryToken]
         public IActionResult Index()
         {
             return View();

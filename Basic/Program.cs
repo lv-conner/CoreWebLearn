@@ -14,6 +14,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.FileProviders;
 using System.Threading;
 using System.Collections.Generic;
+using System.Runtime.Loader;
 
 namespace Basic
 {
@@ -21,6 +22,8 @@ namespace Basic
     {
         static void Main(string[] args)
         {
+
+            AssemblyLoad();
             LoadAssembly();
             Console.WriteLine("MainThread" + Thread.CurrentThread.ManagedThreadId);
             TrackFileChange();
@@ -153,6 +156,36 @@ namespace Basic
             var options = lazyOptions.Value;
         }
 
+
+        static void TestGenicClass()
+        {
+            IServiceProvider serviceProvider = new ServiceCollection()
+                .AddTransient(typeof(ISay<>), typeof(Say<>))
+                .BuildServiceProvider();
+            ISay<string> say = serviceProvider.GetService<ISay<string>>();
+        }
+
+        static void AssemblyLoad()
+        {
+            //Assembly asm1 = Assembly.LoadFrom(Path.Combine(Directory.GetCurrentDirectory(), "DBLogger.dll"));
+            //var asm1 = Assembly.Load(new AssemblyName("SimpleLib"));
+            //
+            //.net core通过反射加载没有添加相应引用的程序集。需要在program.deps.json文件中target：programname dependencies中添加相应的依赖。
+            //target中添加dll映射。
+            //然后在libraries中注册影响的类库
+            //
+            var assembly = Assembly.Load(new AssemblyName("DBLogger"));
+            //AssemblyName assembly = new AssemblyName("DBLogger");
+        }
+
+
+    }
+    public interface ISay<T>
+    {
+
+    }
+    public class Say<T>:ISay<T>
+    {
 
     }
     public class StringOptions

@@ -12,6 +12,8 @@ function openWebsocket(e) {
         console.log("open");
     }
     socket.onclose = function (e, state) {
+        console.log(e);
+        console.log(state);
         console.log("close");
     }
     socket.onmessage = function (msg) {
@@ -25,4 +27,14 @@ function openWebsocket(e) {
     }
     window.socket = socket;
     console.log("click");
+}
+
+function sendFile() {
+    if (window.socket === null)
+        return;
+    var file = document.querySelector("input[type='file']").files[0];
+    if (file === undefined || file === null) {
+        return;
+    }
+    window.socket.send(file);
 }
