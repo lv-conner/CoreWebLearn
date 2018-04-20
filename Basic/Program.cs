@@ -175,10 +175,46 @@ namespace Basic
             //然后在libraries中注册影响的类库
             //
             var assembly = Assembly.Load(new AssemblyName("DBLogger"));
+            ServiceCollection serviceCollection = new ServiceCollection();
+
+            serviceCollection.AddAssembly(assembly);
+
+
+
+            //var types = assembly.GetTypes();
+            //foreach (var item in types)
+            //{
+            //    var ItemInterface = item.GetInterfaces();
+            //    foreach (var inter in ItemInterface)
+            //    {
+            //        serviceCollection.AddTransient(inter, item);
+            //    }
+            //    //serviceProvider.AddTransient(typeof(ILogger), item);
+            //}
+            var service = serviceCollection.BuildServiceProvider().GetService<ILogger>();
             //AssemblyName assembly = new AssemblyName("DBLogger");
         }
 
 
+    }
+
+    /// <summary>
+    /// 添加程序集
+    /// </summary>
+    public static class DependencyInjectionExtension
+    {
+        public static ServiceCollection AddAssembly(this ServiceCollection services, Assembly assembly)
+        {
+            var types = assembly.GetTypes().Where(p=>p.IsAbstract == false);
+            foreach (var type in types)
+            {
+                foreach (var inter in type.GetInterfaces())
+                {
+                    services.AddTransient(inter, type);
+                }
+            }
+            return services;
+        }
     }
     public interface ISay<T>
     {
