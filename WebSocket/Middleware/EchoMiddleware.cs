@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using WebSocketLearn.Services;
 
 /// <summary>
@@ -22,20 +23,24 @@ namespace WebSocketLearn.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger logger;
-        public EchoMiddleware(RequestDelegate next,ILoggerFactory loggerFactory)
+        private System.Net.WebSockets.WebSocket socket = null;
+        private readonly IWebSocketEncoding socketEncoding;
+        private readonly WebSocketOptions options;
+        public EchoMiddleware(RequestDelegate next,ILoggerFactory loggerFactory, IWebSocketEncoding socketEncoding, IOptions<WebSocketOptions> options)
         {
+            this.socketEncoding = socketEncoding;
+            this.options = options.Value;
             logger = loggerFactory.CreateLogger<EchoMiddleware>();
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext, IHostingEnvironment hostingEnvironment, IWebSocketEncoding socketEncoding)
+        public async Task Invoke(HttpContext httpContext, IHostingEnvironment hostingEnvironment)
         {
-            var fe = httpContext.Features.Get<IHttpUpgradeFeature>();
             if (httpContext.WebSockets.IsWebSocketRequest)
             {
                 //升级协议，建立链接。返回代表此链接的websocket对象。
-                var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-                var buffer = new byte[4*1024];
+                socket = await httpContext.WebSockets.AcceptWebSocketAsync();
+                var buffer = new byte[options.ReceiveBufferSize];
                 List<byte> msgArr = new List<byte>();
                 //开始侦听socket，获取消息。此时可以向客户端发送消息。
                 //接收到消息后，消息将传入到buffer中。
@@ -45,7 +50,7 @@ namespace WebSocketLearn.Middleware
                 //result.Count 接收的消息长度
                 //result.EndOfMessage 是否已经接受完毕
                 //result.MessageType 消息类型 Text(文字，默认UTF-8编码),Binary(二进制),Close(关闭消息);
-                var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 //当关闭状态没有值时：
                 while(!result.CloseStatus.HasValue)
                 {
@@ -54,7 +59,7 @@ namespace WebSocketLearn.Middleware
                     while (!result.EndOfMessage)
                     {
                         msgArr.AddRange(new ArraySegment<byte>(buffer, 0, result.Count));
-                        result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                        result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     }
                     msgArr.AddRange(new ArraySegment<byte>(buffer, 0, result.Count));
                     switch (result.MessageType)
@@ -70,33 +75,31 @@ namespace WebSocketLearn.Middleware
                             }
                             catch(FileNotFoundException fileNotFound)
                             {
-                                await webSocket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(fileNotFound.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
+                                await socket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(fileNotFound.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
                             }
                             catch(InvalidOperationException inEx)
                             {
-                                await webSocket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(inEx.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
+                                await socket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(inEx.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
                             }
                             catch(Exception e)
                             {
-                                await webSocket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(e.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
+                                await socket.SendAsync(new ArraySegment<byte>(socketEncoding.Encode(e.Message)), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
                             }
                             break;
                         case System.Net.WebSockets.WebSocketMessageType.Close:
                             //关闭链接。
-                            await webSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "客户端关闭", CancellationToken.None);
+                            await socket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "客户端关闭", CancellationToken.None);
                             break;
                         case System.Net.WebSockets.WebSocketMessageType.Text:
                             //获取客户端发送的消息。消息编码，采用UTF8
                             var message = socketEncoding.Decode(msgArr.ToArray());
-                            logger.LogInformation($"{ "Received message is \t" + message }");
-                            var res =socketEncoding.Encode("OK \t" + message);
                             //回显数据
-                            await webSocket.SendAsync(new ArraySegment<byte>(res,0,res.Count()), System.Net.WebSockets.WebSocketMessageType.Text, result.EndOfMessage, CancellationToken.None);
+                            await SendMessage("OK \t" + message);
                             break;
                         default:
                             break;
                     }
-                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer),CancellationToken.None);
+                    result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer),CancellationToken.None);
                 }
 
             }
@@ -105,7 +108,30 @@ namespace WebSocketLearn.Middleware
                 await _next(httpContext);
             }
         }
+        public async Task SendMessage(string message)
+        {
+            var messageArr = socketEncoding.Encode(message);
+            if(messageArr.Length > options.ReceiveBufferSize)
+            {
+                bool isEnd = false;
+                int count = 0;
+                for (int i = 0; i < messageArr.Length; i = i+ options.ReceiveBufferSize)
+                {
+                    count = messageArr.Length > i + options.ReceiveBufferSize ? options.ReceiveBufferSize : messageArr.Length - i;
+                    isEnd = count != options.ReceiveBufferSize;
+                    await socket.SendAsync(new ArraySegment<byte>(messageArr, i, count),System.Net.WebSockets.WebSocketMessageType.Text, isEnd, CancellationToken.None);
+                }
+                logger.LogInformation($"{ "Received message is \t" + message }");
+            }
+            else
+            {
+                await socket.SendAsync(new ArraySegment<byte>(messageArr,0,messageArr.Length), System.Net.WebSockets.WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
     }
+
+
+
 
     // Extension method used to add the middleware to the HTTP request pipeline.
     public static class EchoMiddlewareExtensions
