@@ -16,6 +16,10 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
+using Dapper;
+using System.Data.SqlClient;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Basic
 {
@@ -25,22 +29,137 @@ namespace Basic
         {
             //OptionsMonitorManager();
             //Watch();
-
-
+            ManyOptions();
+            //Scheme();
             //AssemblyLoad();
             //LoadAssembly();
             //Console.WriteLine("MainThread" + Thread.CurrentThread.ManagedThreadId);
             //TrackFileChange();
-
+            //Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+            //DapperCode();
+            //ThreadBase();
             //TestLazy();
-            GetOptions();
+            //GetOptions();
             //GetServices();
             Console.ReadKey();
         }
 
-        static void WatchFile()
+
+        static async void ThreadBase()
+        {
+            await Task.Run(() =>
+            {
+                Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine("Hello");
+            });
+        }
+
+
+        static void ReferenceNotNull(string s)
         {
 
+        }
+        static async Task<string> GetName()
+        {
+            return await Task.Run(() =>
+            {
+                return "tim";
+            });
+        }
+        static void DapperCode()
+        {
+            using (SqlConnection sqlcon = new SqlConnection("Server=PRCNMG1L0311;database=CacheDb;user id=sa;password=Root@admin"))
+            {
+               var cacheList =  sqlcon.Query<Cache>("select Id,Value from SqlCacheTable");
+            }
+        }
+
+        internal class Person
+        {
+            public string name { get; set; }
+            public string id { get; set; }
+        }
+
+        /// <summary>
+        /// 多次使用Actoin<Options>配置Options。则最后所有的Action都会被依次调用。
+        /// </summary>
+        static void ManyOptions()
+        {
+            IServiceProvider serviceProvider = new ServiceCollection()
+                .AddOptions()
+                .Configure<Person>(p =>
+                {
+                    p.name = "tim";
+                })
+                .Configure<Person>(p =>
+                {
+                    p.id = "001";
+                }).BuildServiceProvider();
+            Person person = serviceProvider.GetService<IOptions<Person>>().Value;
+
+        }
+
+
+        /// <summary>
+        /// Authtication中间件解析
+        /// 处理流程如下：
+        /// 先获取IAuthenticationHandlerProvider对象用于获取所有注册的授权处理器
+        /// 然后根据IAuthenticationSchemeProvider获取所有注册的授权处理器对应的名称。处理器，以及显示名称
+        /// AuthenticationScheme ：HandlerType ,DisplayName，Name(Authenticationscheme)
+        /// 然后根据IAuthenticationSchemeProvider中获取的授权处理器。通过名称逐个获取HandlerType进行检查，如果该处理器是实现了IAuthenticationRequestHandler的处理器。
+        /// 则让该处理器尝试接管该请求。一旦实现了IAuthenticationRequestHandler的处理器的HandleRequestAsync()方法返回true。则会导致授权过程结束。
+        /// 如果没有，则获取默认授权模式的处理器。让其接管授权请求。并设置HttpContext.User属性值。至此。授权结束。
+        /// </summary>
+        static async void Scheme()
+        {
+            var services = new ServiceCollection();
+            //AddAuthentication
+            //services.TryAddScoped<IAuthenticationHandlerProvider, AuthenticationHandlerProvider>();
+            //services.TryAddSingleton<IAuthenticationSchemeProvider, AuthenticationSchemeProvider>();
+            services.AddAuthentication("cookie")
+                .AddCookie("cookie")
+                .AddCookie("auth1")
+                ;
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+            IAuthenticationSchemeProvider schemeProvider = serviceProvider.GetService<IAuthenticationSchemeProvider>();
+            IAuthenticationHandlerProvider handlerProvider = serviceProvider.GetService<IAuthenticationHandlerProvider>();
+            var sechemes = await  schemeProvider.GetAllSchemesAsync();
+            foreach (var item in sechemes)
+            {
+                Console.WriteLine(item.DisplayName + "\t" + item.Name + "\t" + item.HandlerType.FullName);
+            }
+        }
+        /// <summary>
+        /// 注册授权管理器的方式
+        /// AddAuthentication主要是添加相关模式提供器和处理提供器也可以在其中直接对AuthenticationOptions进行操作，
+        /// 添加处理器和处理模式的映射。也可以通过其他扩展方法来注册Action.
+        /// </summary>
+        static void AddSchemes()
+        {
+            new ServiceCollection().AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "cookie";
+                options.AddScheme("auth1", builder =>
+                 {
+                     builder.HandlerType = typeof(CookieAuthenticationHandler);
+                     builder.DisplayName = "cookie1";
+                 });
+            });
+            //等价于
+            new ServiceCollection().AddAuthentication("cookie").AddCookie("auth1", "cookie1", op => { });
+        }
+
+
+
+        internal class Cache
+        {
+            public string Id { get; set; }
+            public DateTimeOffset ExpiresAtTime { get; set; }
+            public long SlidingExpirationInSeconds { get; set; }
+        }
+
+        static void WatchFile()
+        {
             FileSystemWatcher fileSystemWatcher = new FileSystemWatcher(@"D:\hello.txt");
             fileSystemWatcher.Changed += (sender, args) =>
             {

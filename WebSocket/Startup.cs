@@ -26,16 +26,17 @@ namespace WebSocketLearn
     }
     public class Startup
     {
-
-        public Startup(IConfiguration configuration)
+        private readonly IHostingEnvironment env;
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+            this.env = env;
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.AddAntiforgery();
@@ -68,7 +69,7 @@ namespace WebSocketLearn
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             //FileServerOptions options = new FileServerOptions()
             //{
