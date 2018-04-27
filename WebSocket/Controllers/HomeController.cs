@@ -5,14 +5,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebSocket.Models;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace WebSocket.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IHostingEnvironment environment;
+        public HomeController(IHostingEnvironment environment)
+        {
+            this.environment = environment;
+        }
         public IActionResult Index()
         {
-            return View();
+            return Content(Directory.GetCurrentDirectory() + "\t" + environment.ContentRootPath);
+            //return View();
         }
 
         public IActionResult About()

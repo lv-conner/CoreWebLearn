@@ -17,6 +17,8 @@ using WebSocketLearn.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Caching.Redis;
+using PhysicalFileLogger;
+using PhysicalFileLogger.Extension;
 
 namespace WebSocketLearn
 {   
@@ -43,7 +45,10 @@ namespace WebSocketLearn
             services.AddSingleton<IWebSocketEncoding, WebSocketEncoding>();
             services.Configure<WebSocketOptions>(Configuration.GetSection("WebSocketOptions"));
             services.AddSession();
-
+            services.AddLogging(builder =>
+            {
+                builder.AddPhyFileLogger();
+            });
 
             //内存缓存，仅限与本机。内部使用IMemoryCache 实现。
             services.AddDistributedMemoryCache();

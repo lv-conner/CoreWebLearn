@@ -16,7 +16,7 @@ namespace Basic.CustomerLoggerProvider
         }
         public ILogger CreateLogger(string categoryName)
         {
-            return new FileLogger(options.Path);
+            return new Basic.CustomerLogger.FileLogger(options.Path);
         }
 
         public void Dispose()

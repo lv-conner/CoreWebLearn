@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CookieAuthentication.Controllers
 {
@@ -13,7 +14,8 @@ namespace CookieAuthentication.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            var userId = HttpContext.User.Identity.Name;
+            return Content(JsonConvert.SerializeObject(HttpContext.User));
         }
 
 

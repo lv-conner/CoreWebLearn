@@ -29,7 +29,7 @@ namespace Basic
         {
             //OptionsMonitorManager();
             //Watch();
-            ManyOptions();
+            //ManyOptions();
             //Scheme();
             //AssemblyLoad();
             //LoadAssembly();
@@ -37,6 +37,8 @@ namespace Basic
             //TrackFileChange();
             //Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
             //DapperCode();
+            FileTest.TestLog();
+            //Logging();
             //ThreadBase();
             //TestLazy();
             //GetOptions();
@@ -47,11 +49,17 @@ namespace Basic
 
         static async void ThreadBase()
         {
-            await Task.Run(() =>
+            Task t = Task.Run(() =>
             {
-                Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
-                Console.WriteLine("Hello");
+                Console.WriteLine("first");
+            }).ContinueWith(t1 =>
+            {
+                Console.WriteLine("second");
+            }).ContinueWith(t2 =>
+            {
+                Console.WriteLine("thrid");
             });
+            await (t);
         }
 
 
@@ -103,12 +111,12 @@ namespace Basic
         /// <summary>
         /// Authtication中间件解析
         /// 处理流程如下：
-        /// 先获取IAuthenticationHandlerProvider对象用于获取所有注册的授权处理器
-        /// 然后根据IAuthenticationSchemeProvider获取所有注册的授权处理器对应的名称。处理器，以及显示名称
+        /// 先获取IAuthenticationHandlerProvider对象用于获取所有注册的认证处理器
+        /// 然后根据IAuthenticationSchemeProvider获取所有注册的认证处理器对应的名称。处理器，以及显示名称
         /// AuthenticationScheme ：HandlerType ,DisplayName，Name(Authenticationscheme)
-        /// 然后根据IAuthenticationSchemeProvider中获取的授权处理器。通过名称逐个获取HandlerType进行检查，如果该处理器是实现了IAuthenticationRequestHandler的处理器。
-        /// 则让该处理器尝试接管该请求。一旦实现了IAuthenticationRequestHandler的处理器的HandleRequestAsync()方法返回true。则会导致授权过程结束。
-        /// 如果没有，则获取默认授权模式的处理器。让其接管授权请求。并设置HttpContext.User属性值。至此。授权结束。
+        /// 然后根据IAuthenticationSchemeProvider中获取的认证处理器。通过名称逐个获取HandlerType进行检查，如果该处理器是实现了IAuthenticationRequestHandler的处理器。
+        /// 则让该处理器尝试接管该请求。一旦实现了IAuthenticationRequestHandler的处理器的HandleRequestAsync()方法返回true。则会导致认证过程结束。
+        /// 如果没有，则获取默认认证模式的处理器。让其接管认证请求。并设置HttpContext.User属性值。至此。认证结束。
         /// </summary>
         static async void Scheme()
         {
@@ -130,7 +138,7 @@ namespace Basic
             }
         }
         /// <summary>
-        /// 注册授权管理器的方式
+        /// 注册认证管理器的方式
         /// AddAuthentication主要是添加相关模式提供器和处理提供器也可以在其中直接对AuthenticationOptions进行操作，
         /// 添加处理器和处理模式的映射。也可以通过其他扩展方法来注册Action.
         /// </summary>
@@ -405,6 +413,38 @@ namespace Basic
             var service = serviceCollection.BuildServiceProvider().GetService<ILogger>();
             //AssemblyName assembly = new AssemblyName("DBLogger");
         }
+        
+        static void Logging()
+        {
+            IServiceProvider serviceProvider = new ServiceCollection()
+                .AddLogging(builder =>
+                {
+                    builder.AddConsole();
+                }).BuildServiceProvider();
+            ILogger logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<int>();
+            logger.LogInformation("Hello");
+        }
+
+
+
+
+
+
+
+        /// <summary>
+        /// 服务范围的实现方式。
+        /// DependencyInjection 
+        /// </summary>
+        static void DependencyInjection()
+        {
+            IServiceProvider serviceProvider = new ServiceCollection()
+                .AddTransient(typeof(IRepository<>), typeof(Repository<>))
+                .BuildServiceProvider();
+            using (IServiceScope serviceScope = serviceProvider.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var repsitory = serviceScope.ServiceProvider.GetService<IRepository<string>>();
+            }
+        }
 
 
     }
@@ -452,5 +492,57 @@ namespace Basic
     public class Service2 : IService
     {
 
+    }
+
+
+    public interface IRepository<T> where T :class
+    {
+        void Save();
+        T Get();
+    }
+
+    public class Repository<T> : IRepository<T> where T :class
+    {
+        private readonly List<T> List = new List<T>();
+        public T Get()
+        {
+            return List.FirstOrDefault();
+        }
+
+        public void Save()
+        {
+        }
+    }
+
+    public class Company<T> where T:class
+    {
+        private IRepository<T> repository;
+        //属性注入。
+        public IRepository<T> Repository { get => repository; set => repository = value; }
+        //方法注入
+        //属性注入和方法注入最终实现都是一样的。因为属性本质上就是方法
+        public void SetRepository(IRepository<T> repository)
+        {
+            Repository = repository;
+        }
+
+
+        //构造函数注入
+        public Company(IRepository<T> repository)
+        {
+            this.Repository = repository;
+        }
+
+        public void Save()
+        {
+            //somecheck
+            Repository.Save();
+        }
+
+        public T Get()
+        {
+            //somecheck
+            return Repository.Get();
+        }
     }
 }
