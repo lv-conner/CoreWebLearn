@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleLib", "SimpleLib\Simp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{08265AE9-8C60-4239-8BC6-4D9448A045F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthImplement", "OAuthImplement\OAuthImplement.csproj", "{64E2D408-569B-4147-B486-5BE4E6893186}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{08265AE9-8C60-4239-8BC6-4D9448A045F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08265AE9-8C60-4239-8BC6-4D9448A045F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08265AE9-8C60-4239-8BC6-4D9448A045F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64E2D408-569B-4147-B486-5BE4E6893186}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64E2D408-569B-4147-B486-5BE4E6893186}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64E2D408-569B-4147-B486-5BE4E6893186}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64E2D408-569B-4147-B486-5BE4E6893186}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
