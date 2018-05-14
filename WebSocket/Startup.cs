@@ -71,6 +71,7 @@ namespace WebSocketLearn
                 options.TableName = "SqlCacheTable";
             });
             //Timespan时间格式：0.00：00：00从string转换。
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
