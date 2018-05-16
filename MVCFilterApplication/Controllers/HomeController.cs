@@ -9,7 +9,7 @@ using MVCFilterApplication.Models;
 
 namespace MVCFilterApplication.Controllers
 {
-    [Area("System")]
+    
     public class HomeController : Controller
     {
         private readonly ILogger logger;

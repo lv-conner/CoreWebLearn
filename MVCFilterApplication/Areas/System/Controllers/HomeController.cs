@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MVCFilterApplication.Areas.System.Controllers
 {
+    [Area("System")]
     public class HomeController : Controller
     {
         public IActionResult Index()

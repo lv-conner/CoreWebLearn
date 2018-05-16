@@ -13,14 +13,17 @@ namespace WebSocket.Controllers
     public class HomeController : Controller
     {
         private readonly IHostingEnvironment environment;
-        public HomeController(IHostingEnvironment environment)
+        private readonly IApplicationLifetime applicationLifetime;
+        public HomeController(IHostingEnvironment environment,IApplicationLifetime applicationLifetime)
         {
             this.environment = environment;
+            this.applicationLifetime = applicationLifetime;
         }
         public IActionResult Index()
         {
-            return Content(Directory.GetCurrentDirectory() + "\t" + environment.ContentRootPath);
-            //return View();
+            //return Content(Directory.GetCurrentDirectory() + "\t" + environment.ContentRootPath);
+            var features = HttpContext.Features;
+            return View();
         }
 
         public IActionResult About()
@@ -40,6 +43,12 @@ namespace WebSocket.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult StopApplication()
+        {
+            applicationLifetime.StopApplication();
+            return Content("Success");
         }
     }
 }

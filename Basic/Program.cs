@@ -37,13 +37,58 @@ namespace Basic
             //TrackFileChange();
             //Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
             //DapperCode();
-            FileTest.TestLog();
+            //FileTest.TestLog();
+            //DefaulfEnviromentValue();
             //Logging();
             //ThreadBase();
             //TestLazy();
             //GetOptions();
             //GetServices();
+            CommandLine(args);
             Console.ReadKey();
+        }
+
+
+        static void DefaulfEnviromentValue()
+        {
+            var configuration = new ConfigurationBuilder()
+            .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+            .Build();
+            foreach (var item in configuration.AsEnumerable())
+            {
+                Console.WriteLine($"{ "key=" + item.Key + "\tvalue=" + item.Value }");
+            }
+        }
+
+        static void CommandLine(string[] args)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter command line switches:");
+                    string arguments = Console.ReadLine();
+                    Dictionary<string, string> mapping = new Dictionary<string, string>
+                    {
+                        ["--a"] = "architecture ",
+                        ["-a"] = "architecture ",
+                        ["--r"] = "runtime",
+                        ["-r"] = "runtime",
+                    };
+                    IConfiguration config = new ConfigurationBuilder()
+                        .AddCommandLine(arguments.Split(' '), mapping)
+                        .Build();
+
+                    foreach (var section in config.GetChildren())
+                    {
+                        Console.WriteLine($"{section.Key}: {section.Value}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
 
@@ -78,7 +123,7 @@ namespace Basic
         {
             using (SqlConnection sqlcon = new SqlConnection("Server=PRCNMG1L0311;database=CacheDb;user id=sa;password=Root@admin"))
             {
-               var cacheList =  sqlcon.Query<Cache>("select Id,Value from SqlCacheTable");
+                var cacheList = sqlcon.Query<Cache>("select Id,Value from SqlCacheTable");
             }
         }
 
@@ -131,7 +176,7 @@ namespace Basic
             IServiceProvider serviceProvider = services.BuildServiceProvider();
             IAuthenticationSchemeProvider schemeProvider = serviceProvider.GetService<IAuthenticationSchemeProvider>();
             IAuthenticationHandlerProvider handlerProvider = serviceProvider.GetService<IAuthenticationHandlerProvider>();
-            var sechemes = await  schemeProvider.GetAllSchemesAsync();
+            var sechemes = await schemeProvider.GetAllSchemesAsync();
             foreach (var item in sechemes)
             {
                 Console.WriteLine(item.DisplayName + "\t" + item.Name + "\t" + item.HandlerType.FullName);
@@ -171,7 +216,7 @@ namespace Basic
             FileSystemWatcher fileSystemWatcher = new FileSystemWatcher(@"D:\hello.txt");
             fileSystemWatcher.Changed += (sender, args) =>
             {
-                
+
             };
         }
 
@@ -208,7 +253,7 @@ namespace Basic
             var changeToken = fileProvider.Watch("hello.txt");
             changeToken.RegisterChangeCallback(o =>
             {
-                
+
             }, null);
         }
 
@@ -260,7 +305,7 @@ namespace Basic
         /// </summary>
         static void OptionsMonitorManager()
         {
-            var config = new ConfigurationBuilder().AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"),false,true).Build();
+            var config = new ConfigurationBuilder().AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"), false, true).Build();
             IServiceProvider serviceProvider = new ServiceCollection().AddOptions().Configure<StringOptions>(config.GetSection("StringOptions")).BuildServiceProvider();
             //要实现IOptionsMonitors的O你Change事件。则该Options内容提供商（ConfigurationProvider）必须可以实现对原值的监视。
             //OptionsMonitor内部使用ChangToken来注册，其中IChange Token的提供者为ConfigurationChangeTokenSource的IConfiguation
@@ -313,23 +358,23 @@ namespace Basic
             //最终使用这些配置对新建的Options进行配置
             //因此Options模式，要求Options需要具备无参构造函数。
             IServiceProvider serviceProvider = new ServiceCollection().AddOptions()
-                .Configure<StringOptions>("1",so =>
-                {
-                    so.name = "tem";
-                })
-                .Configure<StringOptions>("2",op =>
-                {
-                    op.name = "tim1";
-                })
-                .Configure<StringOptions>("3",op1 =>
-                {
-                    op1.name = "tim2";
-                })
-                .ConfigureAll<StringOptions>(str => 
+                .Configure<StringOptions>("1", so =>
+                 {
+                     so.name = "tem";
+                 })
+                .Configure<StringOptions>("2", op =>
+                 {
+                     op.name = "tim1";
+                 })
+                .Configure<StringOptions>("3", op1 =>
+                 {
+                     op1.name = "tim2";
+                 })
+                .ConfigureAll<StringOptions>(str =>
                 {
                     str.name = "tim";
                 })
-            
+
                 .BuildServiceProvider();
 
             var name = serviceProvider.GetService<IConfigureOptions<StringOptions>>();
@@ -349,15 +394,15 @@ namespace Basic
 
         static void SessionCheck()
         {
-            
+
         }
 
         static void TrackFileChange()
         {
-            ChangeToken.OnChange(() => 
+            ChangeToken.OnChange(() =>
             {
                 return new PhysicalFileProvider(Directory.GetCurrentDirectory()).Watch("/*.txt");
-            }, () => 
+            }, () =>
             {
                 Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine("change");
@@ -413,7 +458,7 @@ namespace Basic
             var service = serviceCollection.BuildServiceProvider().GetService<ILogger>();
             //AssemblyName assembly = new AssemblyName("DBLogger");
         }
-        
+
         static void Logging()
         {
             IServiceProvider serviceProvider = new ServiceCollection()
@@ -456,7 +501,7 @@ namespace Basic
     {
         public static ServiceCollection AddAssembly(this ServiceCollection services, Assembly assembly)
         {
-            var types = assembly.GetTypes().Where(p=>p.IsAbstract == false);
+            var types = assembly.GetTypes().Where(p => p.IsAbstract == false);
             foreach (var type in types)
             {
                 foreach (var inter in type.GetInterfaces())
@@ -471,7 +516,7 @@ namespace Basic
     {
 
     }
-    public class Say<T>:ISay<T>
+    public class Say<T> : ISay<T>
     {
 
     }
@@ -495,13 +540,13 @@ namespace Basic
     }
 
 
-    public interface IRepository<T> where T :class
+    public interface IRepository<T> where T : class
     {
         void Save();
         T Get();
     }
 
-    public class Repository<T> : IRepository<T> where T :class
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly List<T> List = new List<T>();
         public T Get()
@@ -514,7 +559,7 @@ namespace Basic
         }
     }
 
-    public class Company<T> where T:class
+    public class Company<T> where T : class
     {
         private IRepository<T> repository;
         //属性注入。
