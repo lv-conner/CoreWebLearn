@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using WcfService;
 
 namespace ServiceScope
 {
@@ -18,9 +19,9 @@ namespace ServiceScope
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext, ITransient transient, IScope scope, ISingleton singleton)
+        public async Task Invoke(HttpContext httpContext, ITransient transient, IScope scope, ISingleton singleton, INameService nameService)
         {
-            
+            var name = await nameService.HelloAsync("tim");
             transient.Count++;
             scope.Count++;
             singleton.Count++;

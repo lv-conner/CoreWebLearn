@@ -44,9 +44,29 @@ namespace Basic
             //TestLazy();
             //GetOptions();
             //GetServices();
-            CommandLine(args);
+            //CommandLine(args);
+            DapperLearn.Learn();
+            //inte();
             Console.ReadKey();
         }
+
+        static void inte()
+        {
+            InterLock locker = new InterLock()
+            {
+                Id = "001"
+            };
+
+
+            var locker1 = Interlocked.Exchange(ref locker, new InterLock() { Id = "002" });
+
+            Console.WriteLine(locker1.Id);
+
+
+        }
+
+
+
 
 
         static void DefaulfEnviromentValue()
@@ -589,5 +609,10 @@ namespace Basic
             //somecheck
             return Repository.Get();
         }
+    }
+
+    public class InterLock
+    {
+        public string Id { get; set; }
     }
 }
