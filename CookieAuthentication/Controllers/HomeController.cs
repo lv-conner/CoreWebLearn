@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using CookieAuthentication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http.Features.Authentication;
 
 namespace CookieAuthentication.Controllers
 {
@@ -15,6 +16,8 @@ namespace CookieAuthentication.Controllers
     {
         public IActionResult Index()
         {
+            var autnentication = HttpContext.Features.Get<IHttpAuthenticationFeature>();
+            return Json(HttpContext.Features.ToList().Select(p => new { p.Key, valueType = p.Value.GetType() }));
             return View();
         }
 

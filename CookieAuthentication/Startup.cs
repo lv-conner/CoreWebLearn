@@ -28,6 +28,7 @@ namespace CookieAuthentication
                 options.LoginPath = "/Login/Login";
                 options.LogoutPath = "/Login/AfterLogout";
             });
+            services.AddMemoryCache();
             services.AddMvc();
         }
 
