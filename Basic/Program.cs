@@ -45,7 +45,8 @@ namespace Basic
             //GetOptions();
             //GetServices();
             //CommandLine(args);
-            DapperLearn.Learn();
+            PocketGo.Authentication();
+            //DapperLearn.Learn();
             //inte();
             Console.ReadKey();
         }
