@@ -4,10 +4,37 @@
 }
 
 <h2>Index</h2>
+<script src="~/lib/jquery/dist/jquery.js"></script>
 
-<form asp-action="Upload" enctype="multipart/form-data">
+<form asp-action="Upload" enctype="multipart/form-data" id="form1">
     <input name="name" type="text" />
     <input name="fileUpload" type="file"/>
-    <button type="submit">submit</button>
+    <button type="button" id="submit">submit</button>
 </form>
+
+<script>
+    $(function () {
+        $("#submit").on("click", function () {
+            var data = new FormData($("#form1")[0]);
+            $.ajax({
+                url: "/File/Upload",
+                type: "post",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (rst) {
+                    console.log(rst);
+
+                },
+                error: function (state, error) {
+                    debugger;
+
+                }
+
+            })
+
+        })
+
+    })
+</script>
 

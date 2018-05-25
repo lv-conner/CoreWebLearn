@@ -17,7 +17,6 @@ namespace CookieAuthentication.Controllers
         public IActionResult Index()
         {
             var autnentication = HttpContext.Features.Get<IHttpAuthenticationFeature>();
-            return Json(HttpContext.Features.ToList().Select(p => new { p.Key, valueType = p.Value.GetType() }));
             return View();
         }
 
