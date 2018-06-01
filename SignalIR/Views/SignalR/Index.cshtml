@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<script src="~/lib/signalr/signalr.js"></script>
+<h2>Index</h2>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/ChatHub")
+        .build();
+    connection.on("ReceiveMessage", (user, message) => {
+        console.log(user);
+        console.log(message);
+    });
+
+    connection.on("ReceiveMessageFromOtherUser", (user, message) => {
+
+
+    });
+
+</script>
+
