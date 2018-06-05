@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h1>Result API</h1></div>
+        <div class="panel-default">
+            <div class="btn btn-group">
+                <button class="btn btn-primary">Get</button>
+                <button class="btn btn-default">Post</button>
+                <button class="btn btn-default">Put</button>
+                <button class="btn btn-info">Head</button>
+                <button class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $(".btn").on("click", function (e) {
+            debugger;
+            let method = e.target.innerText.toLocaleLowerCase();
+            console.log(method);
+            switch (method) {
+                case "get":
+                    commonAjax("/api/values/", "get", null, "application/json", function (rst) {
+                        console.log(rst);
+                    });
+                    break;
+                case "post":
+                    break;
+                case "put":
+                    break;
+                case "delete":
+                    break;
+                default:
+                    throw "not support method";
+                    break;
+
+            }
+        })
+
+    });
+    function commonAjax(url,type,data,dataType,callback) {
+        $.ajax({
+            url:url,
+            type: type,
+            data: data,
+            dataType: dataType,
+            success: callback,
+            error: function () {
+                console.log("error");
+
+            }
+
+        })
+
+    }
+</script>
+
+<h2>Index</h2>
+

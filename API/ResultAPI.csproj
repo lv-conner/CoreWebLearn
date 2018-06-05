@@ -1,11 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <UserSecretsId>7783bc18-c6a6-4404-873a-97f3bb092b97</UserSecretsId>  </PropertyGroup>
+    <UserSecretsId>8a5b46ec-01b9-45fb-849e-55b6f8a3f269</UserSecretsId>
+  </PropertyGroup>
 
   <ItemGroup>
-    <Content Include=".bowerrc" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
