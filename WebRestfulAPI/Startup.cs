@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,6 +31,8 @@ namespace WebRestfulAPI
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.ReportApiVersions = true;
                 options.AssumeDefaultVersionWhenUnspecified = true;
+                //配置从Http请求报头获取api版本
+                options.ApiVersionReader = new HeaderApiVersionReader("api-version");
             });
         }
 
@@ -40,7 +43,6 @@ namespace WebRestfulAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseMvc();
         }
     }

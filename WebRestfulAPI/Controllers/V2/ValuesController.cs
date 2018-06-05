@@ -6,7 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebRestfulAPI.Controllers.V2
 {
+    //Url Segment方式
     [Route("api/v{version:apiVersion}/[controller]")]
+    //普通特性路由
+    [Route("api/[controller]")]
+    //Api版本选择特性
     [ApiVersion("2.0")]
     [ApiController]
     public class ValuesController : ControllerBase

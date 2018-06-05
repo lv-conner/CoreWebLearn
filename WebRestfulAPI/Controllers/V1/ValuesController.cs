@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebRestfulAPI.Controllers.V1
 {
     [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     public class ValuesController : ControllerBase
