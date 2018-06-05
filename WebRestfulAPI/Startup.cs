@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using WebRestfulAPI.Repository;
 
 namespace WebRestfulAPI
 {
@@ -34,6 +35,7 @@ namespace WebRestfulAPI
                 //配置从Http请求报头获取api版本
                 options.ApiVersionReader = new HeaderApiVersionReader("api-version");
             });
+            services.AddSingleton<IPersonRepository, MemoryPersonRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
