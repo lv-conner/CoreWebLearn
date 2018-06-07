@@ -32,7 +32,7 @@ namespace WebRestfulAPI.Controllers.V1
             return Ok(_repository.Get().ToList());
         }
         [HttpPost]
-        public void Post(Person person)
+        public void Post([FromBody]Person person)
         {
             _repository.Save(person);
         }

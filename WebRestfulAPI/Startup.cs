@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,10 @@ namespace WebRestfulAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(option =>
+            {
+
+            });//.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddApiVersioning(options =>
             {
                 options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -36,6 +40,12 @@ namespace WebRestfulAPI
                 options.ApiVersionReader = new HeaderApiVersionReader("api-version");
             });
             services.AddSingleton<IPersonRepository, MemoryPersonRepository>();
+
+
+            MvcOptions mvcOptions = services.BuildServiceProvider().CreateScope().ServiceProvider.GetService<IOptionsMonitor<MvcOptions>>().CurrentValue;
+            MvcCompatibilityOptions mvcCompatibilityOptions = services.BuildServiceProvider().CreateScope().ServiceProvider.GetService<IOptionsMonitor<MvcCompatibilityOptions>>().CurrentValue;
+            IActionSelector actionSelector = services.BuildServiceProvider().CreateScope().ServiceProvider.GetService<IActionSelector>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
